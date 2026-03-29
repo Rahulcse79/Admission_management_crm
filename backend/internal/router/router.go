@@ -24,9 +24,13 @@ func Setup(h *handlers.Handlers, authSvc *services.AuthService, cfg *config.Conf
 	// CORS
 	origins := strings.Split(cfg.CORSOrigins, ",")
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     origins,
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowOrigins: origins,
+		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders: []string{
+			"Origin", "Content-Type", "Accept", "Authorization",
+			"X-Requested-With", "X-Request-Timestamp", "X-Request-Nonce",
+			"X-Request-Fingerprint", "X-Content-Type-Options",
+		},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))

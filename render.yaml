@@ -3,28 +3,41 @@ services:
   - type: web
     name: edumerge-backend
     runtime: docker
+    repo: https://github.com/rahulsingh/Admission_management_crm
+    branch: master
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: free
     envVars:
       - key: MONGODB_URI
         sync: false
+      - key: MONGODB_DATABASE
+        value: admission_crm
       - key: JWT_SECRET
         generateValue: true
       - key: GIN_MODE
         value: release
+      - key: PORT
+        value: "8080"
+      - key: CORS_ORIGINS
+        fromService:
+          name: edumerge-frontend
+          type: web
+          property: host
       - key: ADMIN_EMAIL
         value: admin@edumerge.com
       - key: ADMIN_PASSWORD
-        value: Admin@123
+        sync: false
       - key: ADMIN_NAME
         value: System Admin
-    healthCheckPath: /api/v1/health
+    healthCheckPath: /health
 
   # ─── Frontend ─────────────────────────────────
   - type: web
     name: edumerge-frontend
     runtime: docker
+    repo: https://github.com/rahulsingh/Admission_management_crm
+    branch: master
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     plan: free
@@ -33,4 +46,6 @@ services:
         fromService:
           name: edumerge-backend
           type: web
-          property: hostport
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NODE_ENV
+        value: production

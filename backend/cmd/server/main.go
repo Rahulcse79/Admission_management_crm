@@ -21,10 +21,17 @@ func main() {
 	// Load configuration
 	cfg := config.Load()
 
+	log.Println("─────────────────────────────────────────")
+	log.Println("  EduMerge — Admission Management CRM")
+	log.Printf("  Port: %s | Mode: %s", cfg.Port, cfg.GinMode)
+	log.Println("─────────────────────────────────────────")
+
 	// Connect to MongoDB
 	db, err := database.Connect(cfg.MongoURI, cfg.MongoDB)
 	if err != nil {
-		log.Fatalf("❌ Failed to connect to MongoDB: %v", err)
+		log.Fatalf("❌ Failed to connect to MongoDB: %v\n"+
+			"   → Check MONGODB_URI in your .env file\n"+
+			"   → Make sure MongoDB is running (or use Atlas URI)", err)
 	}
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

@@ -2,18 +2,18 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 env:
   GO_VERSION: "1.22"
   NODE_VERSION: "20"
 
 jobs:
-  # ─── Backend Tests ────────────────────────────────
+  # ─── Backend CI ───────────────────────────────────
   backend-test:
-    name: Backend Tests
+    name: Backend — Vet & Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,14 +37,15 @@ jobs:
         run: go test ./... -v -race -coverprofile=coverage.out
 
       - name: Upload coverage
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: backend/coverage.out
 
-  # ─── Frontend Tests ──────────────────────────────
+  # ─── Frontend CI ─────────────────────────────────
   frontend-lint:
-    name: Frontend Lint & Build
+    name: Frontend — Lint & Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,27 +71,41 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:8080/api/v1
         run: npm run build
 
-  # ─── Deploy to Render ────────────────────────────
+  # ─── Deploy to Render (master only) ──────────────
   deploy:
     name: Deploy to Render
     needs: [backend-test, frontend-lint]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     steps:
       - name: Deploy Backend to Render
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.RENDER_BACKEND_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_BACKEND_SERVICE_ID: ${{ secrets.RENDER_BACKEND_SERVICE_ID }}
+        run: |
+          curl -s -X POST \
+            "https://api.render.com/v1/services/${RENDER_BACKEND_SERVICE_ID}/deploys" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":"do_not_clear"}' \
+            && echo "✅ Backend deploy triggered"
 
       - name: Deploy Frontend to Render
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.RENDER_FRONTEND_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
-
-      - name: Verify deployment
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_FRONTEND_SERVICE_ID: ${{ secrets.RENDER_FRONTEND_SERVICE_ID }}
         run: |
-          echo "✅ Deployment triggered on Render"
-          echo "   Backend: https://admission-crm-api.onrender.com"
-          echo "   Frontend: https://admission-crm.onrender.com"
+          curl -s -X POST \
+            "https://api.render.com/v1/services/${RENDER_FRONTEND_SERVICE_ID}/deploys" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":"do_not_clear"}' \
+            && echo "✅ Frontend deploy triggered"
+
+      - name: Deployment summary
+        run: |
+          echo "───────────────────────────────────────"
+          echo "  ✅ Deployment triggered on Render"
+          echo "  Backend:  https://edumerge-backend.onrender.com"
+          echo "  Frontend: https://edumerge-frontend.onrender.com"
+          echo "───────────────────────────────────────"
