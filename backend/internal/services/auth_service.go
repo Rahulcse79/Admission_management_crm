@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -84,9 +85,11 @@ func (s *AuthService) SeedAdmin(email, password string) error {
 	ctx := context.Background()
 	existing, _ := s.userRepo.FindByEmail(ctx, email)
 	if existing != nil {
+		log.Printf("✅ Admin user already exists: %s", email)
 		return nil // Admin already exists
 	}
 
+	log.Printf("🌱 Creating admin user: %s", email)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -103,7 +106,12 @@ func (s *AuthService) SeedAdmin(email, password string) error {
 		UpdatedAt: time.Now(),
 	}
 
-	return s.userRepo.Create(ctx, admin)
+	if err := s.userRepo.Create(ctx, admin); err != nil {
+		log.Printf("❌ Failed to create admin user: %v", err)
+		return err
+	}
+	log.Printf("✅ Admin user created successfully: %s", email)
+	return nil
 }
 
 // ValidateToken validates a JWT token and returns the user

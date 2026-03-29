@@ -20,10 +20,7 @@ services:
       - key: PORT
         value: "8080"
       - key: CORS_ORIGINS
-        fromService:
-          name: edumerge-frontend
-          type: web
-          property: host
+        value: "http://localhost:3000,https://edumerge-frontend.onrender.com,https://admission-management-crm-frontend.onrender.com"
       - key: ADMIN_EMAIL
         value: admin@edumerge.com
       - key: ADMIN_PASSWORD

@@ -34,7 +34,19 @@ func Setup(h *handlers.Handlers, authSvc *services.AuthService, cfg *config.Conf
 	log.Printf("🌐 CORS allowed origins: %v", origins)
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: origins,
+		AllowOriginFunc: func(origin string) bool {
+			// Allow configured origins
+			for _, o := range origins {
+				if o == origin {
+					return true
+				}
+			}
+			// Allow any *.onrender.com origin (for Render deployments)
+			if strings.HasSuffix(origin, ".onrender.com") {
+				return true
+			}
+			return false
+		},
 		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{
 			"Origin", "Content-Type", "Accept", "Authorization",

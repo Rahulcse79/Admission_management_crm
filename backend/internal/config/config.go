@@ -54,7 +54,7 @@ func Load() *Config {
 		MongoDB:       getEnv("MONGODB_DATABASE", "admission_crm"),
 		JWTSecret:     getEnv("JWT_SECRET", "default-secret-change-me"),
 		JWTExpiry:     jwtExpiry,
-		CORSOrigins:   getEnv("CORS_ORIGINS", "http://localhost:3000,https://admission-management-crm-2.onrender.com"),
+		CORSOrigins:   getEnv("CORS_ORIGINS", "http://localhost:3000,https://edumerge-frontend.onrender.com,https://admission-management-crm-frontend.onrender.com"),
 		GinMode:       getEnv("GIN_MODE", "debug"),
 		AdminEmail:    getEnv("ADMIN_EMAIL", "admin@edumerge.com"),
 		AdminPassword: getEnv("ADMIN_PASSWORD", "Admin@123"),

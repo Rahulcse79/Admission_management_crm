@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ func NewAuthHandler(service *services.AuthService) *AuthHandler {
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("❌ Login: bad request body: %v", err)
 		c.JSON(http.StatusBadRequest, models.APIResponse{
 			Success: false,
 			Error:   err.Error(),
@@ -27,8 +29,11 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	log.Printf("🔑 Login attempt for email: %s", req.Email)
+
 	resp, err := h.service.Login(c.Request.Context(), req)
 	if err != nil {
+		log.Printf("❌ Login failed for %s: %v", req.Email, err)
 		c.JSON(http.StatusUnauthorized, models.APIResponse{
 			Success: false,
 			Error:   err.Error(),
@@ -36,6 +41,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	log.Printf("✅ Login successful for %s", req.Email)
 	c.JSON(http.StatusOK, models.APIResponse{
 		Success: true,
 		Data:    resp,
