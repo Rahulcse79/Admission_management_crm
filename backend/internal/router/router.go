@@ -1,6 +1,7 @@
 package router
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -22,7 +23,16 @@ func Setup(h *handlers.Handlers, authSvc *services.AuthService, cfg *config.Conf
 	r.Use(middleware.Logger())
 
 	// CORS
-	origins := strings.Split(cfg.CORSOrigins, ",")
+	rawOrigins := strings.Split(cfg.CORSOrigins, ",")
+	var origins []string
+	for _, o := range rawOrigins {
+		trimmed := strings.TrimSpace(o)
+		if trimmed != "" {
+			origins = append(origins, trimmed)
+		}
+	}
+	log.Printf("🌐 CORS allowed origins: %v", origins)
+
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: origins,
 		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -33,6 +43,7 @@ func Setup(h *handlers.Handlers, authSvc *services.AuthService, cfg *config.Conf
 		},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
+		MaxAge:           86400,
 	}))
 
 	// Health check
