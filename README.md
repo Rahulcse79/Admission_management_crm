@@ -1,306 +1,44 @@
-# EduMerge — Admission Management & CRM
+<p align="center">
+  <img src="frontend/public/icon.svg" alt="EduMerge Logo" width="80" />
+</p>
 
-> A full-stack admission management system built with **Next.js 15**, **Go (Gin)**, and **MongoDB**. Manage institutions, programs, seat quotas, applicants, and the complete admission lifecycle with role-based access control.
+<h1 align="center">EduMerge — Admission Management CRM</h1>
 
-![Tech Stack](https://img.shields.io/badge/Frontend-Next.js_15-black?logo=next.js)
-![Go](https://img.shields.io/badge/Backend-Go_1.22-00ADD8?logo=go&logoColor=white)
-![MongoDB](https://img.shields.io/badge/Database-MongoDB_7-47A248?logo=mongodb&logoColor=white)
-![Docker](https://img.shields.io/badge/Container-Docker-2496ED?logo=docker&logoColor=white)
+<p align="center">
+  A full-stack admission management system built with <strong>Next.js 15</strong>, <strong>Go (Gin)</strong>, and <strong>MongoDB</strong>.<br/>
+  Manage institutions, programs, seat quotas, applicants, and the complete admission lifecycle.
+</p>
 
----
-
-## 📋 Table of Contents
-
-- [Architecture](#architecture)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [API Reference](#api-reference)
-- [Demo Credentials](#demo-credentials)
-- [Deployment](#deployment)
+<p align="center">
+  <img src="https://img.shields.io/badge/Frontend-Next.js_15-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Backend-Go_1.22-00ADD8?logo=go&logoColor=white" alt="Go" />
+  <img src="https://img.shields.io/badge/Database-MongoDB_7-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white" alt="Render" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white" alt="Docker" />
+</p>
 
 ---
 
-## 🏗 Architecture
+## 📸 Dashboard Preview
 
-```
-┌────────────────┐     HTTP/JSON     ┌────────────────┐     Driver     ┌──────────┐
-│   Next.js 15   │ ◄──────────────► │   Go (Gin)     │ ◄────────────► │ MongoDB  │
-│   React 19     │   Port 3000      │   REST API     │   Port 27017   │          │
-│   Tailwind CSS │                  │   JWT Auth     │                │          │
-└────────────────┘                  └────────────────┘                └──────────┘
-     Frontend                           Backend                        Database
-```
-
-**Backend Clean Architecture:**
-
-```
-Handlers → Services → Repositories → MongoDB
-     ↑         ↑           ↑
-  Middleware  Models     Database
-```
+<p align="center">
+  <img src="docs/dashboard-preview.png" alt="EduMerge Dashboard" width="900" style="border-radius: 12px;" />
+</p>
 
 ---
 
-## ✨ Features
+## 🌐 Live Demo
 
-### Master Setup
-- **Institutions** — CRUD for affiliated universities
-- **Campuses** — Multi-campus support per institution
-- **Departments** — Academic departments per campus
-- **Programs** — UG/PG programs with intake, duration, course type
-- **Academic Years** — Configurable years with "current" toggle
+| Service | URL |
+|---------|-----|
+| 🖥️ **Frontend** | [https://admission-management-crm-2.onrender.com](https://admission-management-crm-2.onrender.com) |
+| ⚙️ **Backend API** | [https://admission-management-crm-h8gq.onrender.com/api/v1](https://admission-management-crm-h8gq.onrender.com/api/v1) |
+| 💚 **Health Check** | [https://admission-management-crm-h8gq.onrender.com/health](https://admission-management-crm-h8gq.onrender.com/health) |
 
-### Seat Management
-- **Quota-wise allocation** — KCET, COMEDK, Management quotas
-- **Real-time counters** — Atomic increment/decrement on seat fill
-- **Supernumerary seats** — Additional category-based seats
-- **Validation** — Quota total must equal program intake
+> **Note:** Free-tier Render services sleep after 15 min of inactivity. First request may take ~30s.
 
-### Applicant Management
-- **Auto-generated application numbers** — `APP/2026/0001` format
-- **15-field applicant form** — Personal, academic, quota details
-- **Document checklist** — 7 standard documents with Pending/Submitted/Verified
-- **Fee tracking** — Pending/Paid/Partial/Waived status
-
-### Admission Lifecycle
-1. **Seat Allocation** — Validates quota availability, atomic seat decrement
-2. **Fee Collection** — Update fee status on admission record
-3. **Confirmation** — Generates structured admission number: `VTU/2026/UG/CSE/KCET/0001`
-4. **Rollback** — Auto-rollback on allocation failure
-
-### Dashboard
-- **6 KPI cards** — Intake, admitted, remaining, docs, fees, confirmed
-- **Quota bar chart** — Visual fill rate per quota
-- **Program pie chart** — Intake distribution across programs
-- **Program summary table** — Fill rate percentages
-- **Recent admissions feed**
-
-### Role-Based Access Control
-| Feature | Admin | Officer | Management |
-|---------|-------|---------|------------|
-| Master CRUD | ✅ | ❌ | ❌ |
-| Seat Matrix Config | ✅ | ❌ | ❌ |
-| Applicant Create | ✅ | ✅ | ❌ |
-| Seat Allocation | ✅ | ✅ | ❌ |
-| Confirm Admission | ✅ | ✅ | ❌ |
-| View Dashboard | ✅ | ✅ | ✅ |
-| User Management | ✅ | ❌ | ❌ |
-
-### UI/UX
-- **Dark / Light / System** theme with smooth transitions
-- **Collapsible sidebar** with role-filtered navigation
-- **Glass morphism** cards and gradient accents
-- **Fully responsive** — works on mobile and desktop
-- **Toast notifications** via Sonner
-- **Animated transitions** (fade-in, slide-in)
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 15, React 19, TypeScript, Tailwind CSS v4 |
-| State | Zustand |
-| HTTP | Axios with JWT interceptors |
-| Charts | Recharts |
-| Icons | Lucide React |
-| Backend | Go 1.22, Gin, gin-contrib/cors |
-| Auth | JWT (golang-jwt/jwt/v5), bcrypt |
-| Database | MongoDB 7, mongo-driver v1.16 |
-| DevOps | Docker, Docker Compose, GitHub Actions |
-| Deploy | Render (render.yaml) |
-
----
-
-## 📁 Project Structure
-
-```
-├── .github/workflows/ci-cd.yml
-├── .gitattributes
-├── .env.example
-├── docker-compose.yml
-├── Makefile
-├── render.yaml
-├── README.md
-│
-├── backend/
-│   ├── Dockerfile
-│   ├── go.mod
-│   ├── scripts/mongo-init.js
-│   ├── cmd/
-│   │   ├── server/main.go          # API entry point
-│   │   └── seed/main.go            # Seed script
-│   └── internal/
-│       ├── config/config.go
-│       ├── database/mongodb.go
-│       ├── models/                  # Domain models
-│       ├── repository/              # Data access layer
-│       ├── services/                # Business logic
-│       ├── handlers/                # HTTP handlers
-│       ├── middleware/              # Auth & logging
-│       └── router/router.go        # Route definitions
-│
-└── frontend/
-    ├── Dockerfile
-    ├── package.json
-    ├── app/
-    │   ├── layout.tsx               # Root layout + ThemeProvider
-    │   ├── page.tsx                 # Auth redirect
-    │   ├── login/page.tsx           # Login page
-    │   └── dashboard/
-    │       ├── layout.tsx           # Sidebar + Header shell
-    │       ├── page.tsx             # Dashboard with charts
-    │       ├── institutions/
-    │       ├── campuses/
-    │       ├── departments/
-    │       ├── programs/
-    │       ├── academic-years/
-    │       ├── seat-matrix/
-    │       ├── applicants/
-    │       ├── admissions/
-    │       └── users/
-    ├── components/
-    │   ├── sidebar.tsx
-    │   ├── header.tsx
-    │   ├── theme-provider.tsx
-    │   ├── theme-toggle.tsx
-    │   └── ui.tsx                   # Reusable components
-    └── lib/
-        ├── api.ts                   # Axios instance
-        ├── types.ts                 # TypeScript interfaces
-        ├── store.ts                 # Zustand auth store
-        └── utils.ts                 # Helpers
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js** ≥ 18
-- **Go** ≥ 1.22
-- **MongoDB** ≥ 7 (or Docker)
-- **Docker & Docker Compose** (optional, for containerized setup)
-
-### Option 1: Docker Compose (Recommended)
-
-```bash
-# Clone the repo
-git clone https://github.com/rahulsingh/admission-crm.git
-cd admission-crm
-
-# Copy env file and adjust if needed
-cp .env.example .env
-
-# Start all services
-docker compose up --build
-```
-
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8080/api/v1
-- MongoDB: localhost:27017
-
-### Option 2: Local Development
-
-```bash
-# ── Backend ──
-cd backend
-go mod tidy
-go run cmd/server/main.go
-
-# ── Frontend ──
-cd frontend
-npm install
-npm run dev
-```
-
-### Option 3: Make Targets
-
-```bash
-make dev          # Start backend + frontend concurrently
-make build        # Build both
-make docker-up    # Docker compose up
-make seed         # Seed demo data
-```
-
----
-
-## 🔐 Environment Variables
-
-Copy `.env.example` to `.env` at the project root:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MONGODB_URI` | `mongodb://localhost:27017/admission_crm` | MongoDB connection string |
-| `JWT_SECRET` | `your-super-secret-jwt-key` | JWT signing secret |
-| `SERVER_PORT` | `8080` | Backend port |
-| `GIN_MODE` | `debug` | Gin mode (debug/release) |
-| `ADMIN_EMAIL` | `admin@edumerge.com` | Auto-seeded admin email |
-| `ADMIN_PASSWORD` | `Admin@123` | Auto-seeded admin password |
-| `ADMIN_NAME` | `System Admin` | Auto-seeded admin name |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:8080/api/v1` | Frontend API base URL |
-
----
-
-## 📡 API Reference
-
-### Authentication
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/auth/login` | — | Login, returns JWT |
-| POST | `/auth/register` | Admin | Create user |
-| GET | `/auth/me` | ✅ | Current user |
-| GET | `/auth/users` | Admin | List users |
-
-### Master Data (Admin only for CUD)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET/POST | `/institutions` | List / Create |
-| GET/PUT/DELETE | `/institutions/:id` | Read / Update / Delete |
-| GET/POST | `/campuses` | List (filter: `?institution_id=`) / Create |
-| GET/POST | `/departments` | List (filter: `?campus_id=`) / Create |
-| GET/POST | `/programs` | List (filter: `?department_id=`) / Create |
-| GET/POST | `/academic-years` | List / Create |
-| PUT | `/academic-years/:id/set-current` | Set active year |
-
-### Seat Matrix (Admin only for CUD)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET/POST | `/seat-matrices` | List / Create |
-| GET/PUT | `/seat-matrices/:id` | Read / Update |
-| GET | `/seat-matrices/availability` | Check availability (`?program_id=&academic_year_id=`) |
-
-### Applicants
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/applicants` | ✅ | Paginated list (`?page=&limit=`) |
-| POST | `/applicants` | Officer | Create applicant |
-| GET | `/applicants/:id` | ✅ | Get details |
-| PUT | `/applicants/:id/documents` | Officer | Update documents |
-| PUT | `/applicants/:id/fee-status` | Officer | Update fee status |
-
-### Admissions
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/admissions` | ✅ | List all |
-| POST | `/admissions/allocate` | Officer | Allocate seat |
-| PUT | `/admissions/:id/confirm` | Officer | Confirm (generates admission #) |
-| PUT | `/admissions/:id/fee-status` | Officer | Update fee |
-| GET | `/admissions/:id` | ✅ | Get details |
-
-### Dashboard
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/dashboard/stats` | Aggregated statistics |
-
----
-
-## 🔑 Demo Credentials
+### Demo Credentials
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -308,28 +46,397 @@ Copy `.env.example` to `.env` at the project root:
 | Admission Officer | `officer@edumerge.com` | `Officer@123` |
 | Management | `management@edumerge.com` | `Mgmt@123` |
 
-> Admin user is auto-seeded on first backend startup. Run `make seed` or `go run cmd/seed/main.go` for all three demo users.
+---
+
+## 📋 Table of Contents
+
+- [Dashboard Preview](#-dashboard-preview)
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [API Reference](#-api-reference)
+- [Project Structure](#-project-structure)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
+
+## ✨ Features
+
+### 🏛️ Master Data Management
+- **Institutions** — CRUD for affiliated universities
+- **Campuses** — Multi-campus support per institution
+- **Departments** — Academic departments per campus
+- **Programs** — UG/PG programs with intake, duration, course type
+- **Academic Years** — Configurable academic years with "current" toggle
+
+### 💺 Seat Matrix & Quota Management
+- **Quota-wise allocation** — KCET, COMEDK, Management quotas
+- **Real-time atomic counters** — Instant seat fill/release
+- **Supernumerary seats** — Additional category-based seats
+- **Validation** — Quota totals must match program intake
+
+### 👤 Applicant Management
+- **Auto-generated IDs** — `APP/2026/0001` format
+- **Comprehensive form** — 15+ fields (personal, academic, quota details)
+- **Document checklist** — 7 standard documents (Pending → Submitted → Verified)
+- **Fee tracking** — Pending / Paid / Partial / Waived
+
+### 🎓 Admission Lifecycle
+1. **Seat Allocation** → Validates quota availability, atomic seat decrement
+2. **Fee Collection** → Update fee status on admission record
+3. **Confirmation** → Generates admission number: `VTU/2026/UG/CSE/KCET/0001`
+4. **Rollback** → Auto-rollback on allocation failure
+
+### 📊 Analytics Dashboard
+- **6 KPI cards** — Total Intake, Admitted, Remaining, Pending Docs, Pending Fees, Confirmed
+- **Quota-wise bar chart** — Visual seat fill rate per quota
+- **Program-wise pie chart** — Intake distribution across programs
+- **Program summary table** — Fill rate percentages
+- **Recent admissions feed**
+
+### 🔐 Role-Based Access Control
+
+| Feature | Admin | Officer | Management |
+|---------|:-----:|:-------:|:----------:|
+| Master Data CRUD | ✅ | ❌ | ❌ |
+| Seat Matrix Config | ✅ | ❌ | ❌ |
+| Create Applicant | ✅ | ✅ | ❌ |
+| Allocate Seat | ✅ | ✅ | ❌ |
+| Confirm Admission | ✅ | ✅ | ❌ |
+| View Dashboard | ✅ | ✅ | ✅ |
+| Manage Users | ✅ | ❌ | ❌ |
+
+### 🎨 UI/UX
+- 🌗 **Dark / Light / System** theme with smooth transitions
+- 📱 **Fully responsive** — mobile & desktop
+- 🧭 **Collapsible sidebar** with role-filtered navigation
+- 💎 **Glass morphism** cards and gradient accents
+- 🔔 **Toast notifications** via Sonner
+- ✨ **Animated transitions** (fade-in, slide-in)
+
+---
+
+## 🏗 Architecture
+
+```
+┌─────────────────┐      HTTPS/JSON      ┌─────────────────┐      Driver      ┌───────────┐
+│   Next.js 15    │ ◄──────────────────► │   Go (Gin)      │ ◄──────────────► │  MongoDB  │
+│   React 19      │    Port 3000         │   REST API      │    Port 27017    │  Atlas    │
+│   Tailwind v4   │                      │   JWT Auth      │                  │           │
+└─────────────────┘                      └─────────────────┘                  └───────────┘
+     Frontend                                Backend                           Database
+```
+
+**Backend — Clean Architecture:**
+
+```
+HTTP Request
+    │
+    ▼
+┌──────────┐    ┌──────────┐    ┌──────────────┐    ┌─────────┐
+│ Handlers │ →  │ Services │ →  │ Repositories │ →  │ MongoDB │
+└──────────┘    └──────────┘    └──────────────┘    └─────────┘
+    ▲                ▲                ▲
+ Middleware       Models          Database
+ (Auth/Log)
+```
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS v4 |
+| **State Management** | Zustand |
+| **HTTP Client** | Axios with JWT interceptors |
+| **Charts** | Recharts |
+| **Icons** | Lucide React |
+| **Backend** | Go 1.22, Gin Framework, gin-contrib/cors |
+| **Authentication** | JWT (golang-jwt/jwt/v5), bcrypt |
+| **Database** | MongoDB 7, Official Go Driver |
+| **DevOps** | Docker, Docker Compose, GitHub Actions CI/CD |
+| **Deployment** | Render (render.yaml Blueprint) |
+| **Security** | CSP headers, CORS, rate limiting, input sanitization |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+| Tool | Version | Required |
+|------|---------|----------|
+| **Node.js** | ≥ 18 | ✅ |
+| **Go** | ≥ 1.22 | ✅ |
+| **MongoDB** | ≥ 7 | ✅ (or use Docker / Atlas) |
+| **Docker** | Latest | Optional |
+
+### Option 1 — Docker Compose (Recommended)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Rahulcse79/Admission_management_crm.git
+cd Admission_management_crm
+
+# 2. Create environment file
+cp env.example.txt .env
+
+# 3. Start all services (MongoDB + Backend + Frontend)
+docker compose up --build
+```
+
+🎉 **That's it!** Open:
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Backend API:** [http://localhost:8080/api/v1](http://localhost:8080/api/v1)
+- **MongoDB:** `localhost:27017`
+
+### Option 2 — Local Development
+
+```bash
+# 1. Clone & setup environment
+git clone https://github.com/Rahulcse79/Admission_management_crm.git
+cd Admission_management_crm
+cp env.example.txt .env
+# Edit .env with your MongoDB URI
+```
+
+**Start Backend:**
+```bash
+cd backend
+go mod tidy
+go run cmd/server/main.go
+# ✅ Server running on http://localhost:8080
+```
+
+**Start Frontend (new terminal):**
+```bash
+cd frontend
+npm install
+npm run dev
+# ✅ Frontend running on http://localhost:3000
+```
+
+### Option 3 — Make Targets
+
+```bash
+make dev          # Start backend + frontend concurrently
+make build        # Build both services
+make docker-up    # Docker compose up
+make docker-down  # Docker compose down
+make seed         # Seed demo data (all 3 user roles)
+```
+
+### First Login
+
+1. Open [http://localhost:3000](http://localhost:3000)
+2. Login with: **`admin@edumerge.com`** / **`Admin@123`**
+3. The admin user is **auto-created** on first backend startup
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the project root (see `env.example.txt`):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MONGODB_URI` | `mongodb://localhost:27017/admission_crm` | MongoDB connection string |
+| `MONGODB_DATABASE` | `admission_crm` | Database name |
+| `PORT` | `8080` | Backend server port |
+| `GIN_MODE` | `debug` | Gin mode (`debug` / `release`) |
+| `JWT_SECRET` | — | JWT signing secret (⚠️ change in production!) |
+| `JWT_EXPIRY_HOURS` | `24` | JWT token expiry in hours |
+| `CORS_ORIGINS` | `http://localhost:3000` | Allowed CORS origins (comma-separated) |
+| `ADMIN_EMAIL` | `admin@edumerge.com` | Auto-seeded admin email |
+| `ADMIN_PASSWORD` | `Admin@123` | Auto-seeded admin password |
+| `ADMIN_NAME` | `System Admin` | Auto-seeded admin display name |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8080/api/v1` | Frontend → Backend API URL |
+
+---
+
+## 📡 API Reference
+
+All endpoints are prefixed with `/api/v1`
+
+### Authentication
+| Method | Endpoint | Auth | Description |
+|--------|----------|:----:|-------------|
+| `POST` | `/auth/login` | — | Login, returns JWT token |
+| `POST` | `/auth/register` | Admin | Create new user |
+| `GET` | `/auth/me` | ✅ | Get current user profile |
+| `GET` | `/auth/users` | Admin | List all users |
+
+### Master Data (Admin only for Create/Update/Delete)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` `POST` | `/institutions` | List / Create institutions |
+| `GET` `PUT` `DELETE` | `/institutions/:id` | Read / Update / Delete |
+| `GET` `POST` | `/campuses` | List (`?institution_id=`) / Create |
+| `GET` `POST` | `/departments` | List (`?campus_id=`) / Create |
+| `GET` `POST` | `/programs` | List (`?department_id=`) / Create |
+| `GET` `POST` | `/academic-years` | List / Create |
+| `PUT` | `/academic-years/:id/set-current` | Set active academic year |
+
+### Seat Matrix
+| Method | Endpoint | Auth | Description |
+|--------|----------|:----:|-------------|
+| `GET` `POST` | `/seat-matrices` | Admin | List / Create seat matrix |
+| `GET` `PUT` | `/seat-matrices/:id` | Admin | Read / Update |
+| `GET` | `/seat-matrices/availability` | ✅ | Check seat availability |
+
+### Applicants
+| Method | Endpoint | Auth | Description |
+|--------|----------|:----:|-------------|
+| `GET` | `/applicants` | ✅ | Paginated list (`?page=&limit=`) |
+| `POST` | `/applicants` | Officer+ | Create new applicant |
+| `GET` | `/applicants/:id` | ✅ | Get applicant details |
+| `PUT` | `/applicants/:id/documents` | Officer+ | Update document status |
+| `PUT` | `/applicants/:id/fee-status` | Officer+ | Update fee status |
+
+### Admissions
+| Method | Endpoint | Auth | Description |
+|--------|----------|:----:|-------------|
+| `GET` | `/admissions` | ✅ | List all admissions |
+| `POST` | `/admissions/allocate` | Officer+ | Allocate seat to applicant |
+| `PUT` | `/admissions/:id/confirm` | Officer+ | Confirm admission |
+| `PUT` | `/admissions/:id/fee-status` | Officer+ | Update fee status |
+| `GET` | `/admissions/:id` | ✅ | Get admission details |
+
+### Dashboard
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/dashboard` | Aggregated KPI statistics |
+
+---
+
+## 📁 Project Structure
+
+```
+Admission_management_crm/
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml              # GitHub Actions CI/CD pipeline
+├── backend/
+│   ├── Dockerfile                 # Multi-stage Go build
+│   ├── go.mod / go.sum
+│   ├── cmd/
+│   │   ├── server/main.go        # 🚀 API entry point
+│   │   └── seed/main.go          # 🌱 Seed demo data
+│   └── internal/
+│       ├── config/config.go      # Environment configuration
+│       ├── database/mongodb.go   # MongoDB connection
+│       ├── models/               # Domain models
+│       ├── repository/           # Data access layer
+│       ├── services/             # Business logic layer
+│       ├── handlers/             # HTTP request handlers
+│       ├── middleware/            # Auth & request logging
+│       └── router/router.go     # Route definitions + CORS
+├── frontend/
+│   ├── Dockerfile                # Multi-stage Next.js build
+│   ├── package.json
+│   ├── next.config.ts            # Security headers + CSP
+│   ├── app/
+│   │   ├── layout.tsx            # Root layout + ThemeProvider
+│   │   ├── page.tsx              # Auth redirect → /dashboard
+│   │   ├── login/page.tsx        # Login page
+│   │   └── dashboard/
+│   │       ├── layout.tsx        # Sidebar + Header shell
+│   │       ├── page.tsx          # 📊 Dashboard with KPIs & charts
+│   │       ├── institutions/     # Institution management
+│   │       ├── campuses/         # Campus management
+│   │       ├── departments/      # Department management
+│   │       ├── programs/         # Program management
+│   │       ├── academic-years/   # Academic year config
+│   │       ├── seat-matrix/      # Seat quota config
+│   │       ├── applicants/       # Applicant list + form
+│   │       ├── admissions/       # Admission lifecycle
+│   │       └── users/            # User management
+│   ├── components/               # Sidebar, Header, Theme, UI
+│   └── lib/                      # API client, types, store, utils
+├── docs/
+│   └── dashboard-preview.png     # Dashboard screenshot
+├── docker-compose.yml            # Full stack compose
+├── render.yaml                   # Render Blueprint (auto-deploy)
+├── Makefile                      # Dev shortcuts
+└── env.example.txt               # Environment template
+```
 
 ---
 
 ## 🚢 Deployment
 
-### Render
+### Deploy to Render (Production)
 
-1. Push to GitHub
-2. Connect repo in Render Dashboard
-3. Use the `render.yaml` Blueprint — it configures both services
-4. Set `MONGODB_URI` to your MongoDB Atlas connection string
-5. Deploy
+This project includes a `render.yaml` Blueprint for one-click deployment.
 
-### Manual Docker
+**Step 1 — Setup MongoDB Atlas (Free)**
+1. Go to [mongodb.com/atlas](https://www.mongodb.com/atlas) → Create free cluster
+2. Create a database user
+3. Network Access → Allow `0.0.0.0/0`
+4. Copy connection string
+
+**Step 2 — Deploy Backend**
+1. [Render Dashboard](https://dashboard.render.com) → **New Web Service**
+2. Connect repo → `Rahulcse79/Admission_management_crm`
+3. **Branch:** `main` · **Runtime:** Docker · **Dockerfile Path:** `./backend/Dockerfile`
+4. Set environment variables (`MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGINS`, etc.)
+5. Health Check Path: `/health`
+
+**Step 3 — Deploy Frontend**
+1. New Web Service → Same repo
+2. **Branch:** `main` · **Runtime:** Docker · **Dockerfile Path:** `./frontend/Dockerfile`
+3. Set `NEXT_PUBLIC_API_URL` = `https://your-backend.onrender.com/api/v1`
+
+**Step 4 — Update backend `CORS_ORIGINS`** with the frontend URL → Redeploy
+
+### Deploy with Docker Compose
 
 ```bash
-docker compose -f docker-compose.yml up --build -d
+docker compose up --build -d     # Start in background
+docker compose logs -f           # View logs
+docker compose down              # Stop all services
 ```
+
+---
+
+## 🔄 CI/CD Pipeline
+
+GitHub Actions runs on every push to `main`:
+
+```
+Push to main
+    │
+    ├── 🔧 Backend CI ──→ go vet → go test (race + coverage)
+    │
+    ├── 🎨 Frontend CI ──→ npm ci → eslint → next build
+    │
+    └── 🚀 Deploy ──→ Trigger Render deploy (backend + frontend)
+```
+
+---
+
+## 🤝 Contributing
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** changes: `git commit -m 'feat: add amazing feature'`
+4. **Push** to branch: `git push origin feature/amazing-feature`
+5. **Open** a Pull Request
 
 ---
 
 ## 📄 License
 
-MIT © Rahul Singh
+MIT © [Rahul Singh](https://github.com/Rahulcse79)
+
+---
+
+<p align="center">
+  Made with ❤️ using Next.js, Go & MongoDB
+</p>
