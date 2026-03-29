@@ -40,3 +40,7 @@ Dockerfile text eol=lf
 *.woff2 binary
 *.ttf binary
 *.eot binary
+
+# env files should not be committed
+.env export-ignore
+.env.* export-ignore
