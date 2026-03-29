@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312e81"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="text-grad" x1="0" y1="0" x2="400" y2="0">
+      <stop offset="0%" stop-color="#e0e7ff"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Grid pattern -->
+  <g opacity="0.06">
+    <line x1="0" y1="0" x2="0" y2="630" stroke="white" stroke-width="1" transform="translate(60,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" stroke="white" stroke-width="1" transform="translate(120,0)"/>
+    <line x1="0" y1="0" x2="0" y2="630" stroke="white" stroke-width="1" transform="translate(180,0)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="1" transform="translate(0,60)"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="white" stroke-width="1" transform="translate(0,120)"/>
+  </g>
+  <!-- Glow blobs -->
+  <circle cx="200" cy="150" r="200" fill="#818cf8" opacity="0.15" filter="blur(80px)"/>
+  <circle cx="900" cy="500" r="250" fill="#a855f7" opacity="0.12" filter="blur(80px)"/>
+  <!-- Graduation cap icon -->
+  <g transform="translate(120,245)">
+    <rect width="80" height="80" rx="18" fill="white" opacity="0.15"/>
+    <g transform="translate(40,42)" fill="white">
+      <polygon points="0,-22 30,-10 0,4 -30,-10" opacity="0.95"/>
+      <path d="M-18,-3 L-18,12 Q-18,18 -12,18 L12,18 Q18,18 18,12 L18,-3" stroke="white" stroke-width="2" fill="none" opacity="0.6"/>
+    </g>
+  </g>
+  <!-- Title -->
+  <text x="230" y="275" font-family="system-ui,-apple-system,sans-serif" font-size="64" font-weight="800" fill="white">EduMerge</text>
+  <!-- Subtitle -->
+  <text x="230" y="320" font-family="system-ui,-apple-system,sans-serif" font-size="26" fill="url(#text-grad)" font-weight="500">Admission Management &amp; CRM</text>
+  <!-- Description -->
+  <text x="120" y="420" font-family="system-ui,-apple-system,sans-serif" font-size="20" fill="#c7d2fe" opacity="0.8">Manage institutions • Allocate seats • Track admissions</text>
+  <text x="120" y="455" font-family="system-ui,-apple-system,sans-serif" font-size="20" fill="#c7d2fe" opacity="0.8">Real-time analytics • Role-based access • Quota compliant</text>
+  <!-- Bottom bar -->
+  <rect x="0" y="600" width="1200" height="30" fill="white" opacity="0.05"/>
+  <text x="120" y="620" font-family="system-ui,sans-serif" font-size="14" fill="white" opacity="0.4">edumerge.com — Built with Next.js, Go &amp; MongoDB</text>
+</svg>

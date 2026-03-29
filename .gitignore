@@ -4,6 +4,10 @@
 .env.production
 .env.*.local
 
+# ─── Build artifacts ──────────────────────────────
+.next/
+node_modules/
+
 # ─── OS files ──────────────────────────────────────
 .DS_Store
 Thumbs.db
