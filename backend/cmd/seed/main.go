@@ -1,4 +1,3 @@
-package seed
 package main
 
 import (

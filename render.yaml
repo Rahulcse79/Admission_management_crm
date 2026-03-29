@@ -1,0 +1,36 @@
+services:
+  # ─── Backend ──────────────────────────────────
+  - type: web
+    name: edumerge-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GIN_MODE
+        value: release
+      - key: ADMIN_EMAIL
+        value: admin@edumerge.com
+      - key: ADMIN_PASSWORD
+        value: Admin@123
+      - key: ADMIN_NAME
+        value: System Admin
+    healthCheckPath: /api/v1/health
+
+  # ─── Frontend ─────────────────────────────────
+  - type: web
+    name: edumerge-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: edumerge-backend
+          type: web
+          property: hostport
