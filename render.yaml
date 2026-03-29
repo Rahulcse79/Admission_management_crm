@@ -3,8 +3,8 @@ services:
   - type: web
     name: edumerge-backend
     runtime: docker
-    repo: https://github.com/rahulsingh/Admission_management_crm
-    branch: master
+    repo: https://github.com/Rahulcse79/Admission_management_crm
+    branch: main
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: free
@@ -36,8 +36,8 @@ services:
   - type: web
     name: edumerge-frontend
     runtime: docker
-    repo: https://github.com/rahulsingh/Admission_management_crm
-    branch: master
+    repo: https://github.com/Rahulcse79/Admission_management_crm
+    branch: main
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     plan: free
